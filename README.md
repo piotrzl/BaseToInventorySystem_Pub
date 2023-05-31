@@ -9,8 +9,8 @@ I How to test inventory system:
   4. press play
 
 II Control:
-  .AWSD - Move
-  .F - interact
+  1. AWSD - Move
+  F - interact
   I - open inventory
   LMB - pick item in invntory
   When item is pick:
