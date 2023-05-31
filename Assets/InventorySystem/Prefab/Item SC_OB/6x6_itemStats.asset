@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3204ea74333e1ab418ec48c4e7123d43, type: 3}
+  m_Name: 6x6_itemStats
+  m_EditorClassIdentifier: 
+  nameID: Orage box
+  itemID: 4
+  prefab: {fileID: 3501609997023926537, guid: 24522a6a69112a647955250e0517834f, type: 3}
+  maxObjectCount: 1
+  size: {x: 6, y: 6}
+  weight: 1
+  maxInventoryCount: 1
+  itemIcon: {fileID: 21300000, guid: 7fac088a4ed059245a901c78817c9334, type: 3}
+  colorIcon: {r: 1, g: 0.48701555, b: 0, a: 1}
