@@ -10,6 +10,7 @@ I How to test inventory system:
 
 II Control:
   AWSD - Move
+  
   F - interact
   I - open inventory
   LMB - Pick item in invntory
