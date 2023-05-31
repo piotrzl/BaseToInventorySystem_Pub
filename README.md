@@ -10,10 +10,10 @@ I How to test inventory system:
 
 II Control:
   1. AWSD - Move
-  F - interact
-  I - open inventory
-  LMB - pick item in invntory
-  When item is pick:
-  R - rotate item
-  LMB - drop full stack to inventory or world
-  RMB - drop one item to inventory or world
+  2. F - interact
+  3. I - open inventory
+  4. LMB - pick item in invntory
+  5. When item is pick:
+  6. R - rotate item
+  7. LMB - drop full stack to inventory or world
+  8. RMB - drop one item to inventory or world
