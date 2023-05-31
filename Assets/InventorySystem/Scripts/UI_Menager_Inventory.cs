@@ -164,7 +164,7 @@ public class UI_Menager_Inventory : MonoBehaviour
        if(handsInventory && !currPickedItem)
        {
             UI_Inventory curPickedItemInventoryParrent = uI_Item.GetComponentInParent<UI_Inventory>();
-            Inventory.TransferItemFromTo(curPickedItemInventoryParrent.Inventory, uI_Item.InventoryCell, int.MaxValue, handsInventory.Inventory, Vector2Int.zero, uI_Item.Image.rectTransform.eulerAngles.z > 1f);
+            Inventory.TransferItemFromTo(curPickedItemInventoryParrent.Inventory, uI_Item.InventoryCell, int.MaxValue, handsInventory.Inventory, Vector2Int.zero, uI_Item.Image.rectTransform.eulerAngles.z > 1f, Inventory.TransferMode.NON);
 
             currPickedItem = handsInventory.Items[0];
         //    lastPositionPickedItem = uI_Item.RectTransform.position;
@@ -192,6 +192,7 @@ public class UI_Menager_Inventory : MonoBehaviour
 
         while (currPickedItem && handsInventory) 
         {
+
             if (Input.GetMouseButtonDown(0)) // one item operation
             {
                 UI_Inventory newInventory = MouseOnInventory();
@@ -200,9 +201,12 @@ public class UI_Menager_Inventory : MonoBehaviour
                 {
                     Vector2 point = GetPositionOnUIGrid(newInventory);
 
-                    point += (new Vector2 (newInventory.GridScale, newInventory.GridScale) - currPickedItem.RectTransform.sizeDelta) /2f;
+                    if (!Inventory.TransferItemFromTo(handsInventory.Inventory, currPickedItem.InventoryCell, int.MaxValue, newInventory.Inventory, GetCellFormUIGrid(point, newInventory.GridScale), isTunred, Inventory.TransferMode.ONLY_EXIST))
+                    {
+                        point += (new Vector2(newInventory.GridScale, newInventory.GridScale) - currPickedItem.RectTransform.sizeDelta) / 2f;
 
-                    Inventory.TransferItemFromTo(handsInventory.Inventory, currPickedItem.InventoryCell, int.MaxValue, newInventory.Inventory, GetCellFormUIGrid(point, newInventory.GridScale), isTunred);
+                        Inventory.TransferItemFromTo(handsInventory.Inventory, currPickedItem.InventoryCell, int.MaxValue, newInventory.Inventory, GetCellFormUIGrid(point, newInventory.GridScale), isTunred, Inventory.TransferMode.ONLY_EMPTY);
+                    }
                 }
                 else //drop one item
                 {
@@ -213,13 +217,20 @@ public class UI_Menager_Inventory : MonoBehaviour
             {
                 UI_Inventory newInventory = MouseOnInventory();
 
+               
+
                 if (newInventory) // put all item to slot
                 {
+
                     Vector2 point = GetPositionOnUIGrid(newInventory);
 
-                    point += (new Vector2(newInventory.GridScale, newInventory.GridScale) - currPickedItem.RectTransform.sizeDelta) / 2f;
+                    // UI_Item newitem = MouseOnItem(currPickedItem);
+                    if (!Inventory.TransferItemFromTo(handsInventory.Inventory, currPickedItem.InventoryCell, 1, newInventory.Inventory, GetCellFormUIGrid(point, newInventory.GridScale), isTunred, Inventory.TransferMode.ONLY_EXIST))
+                    {
+                        point += (new Vector2(newInventory.GridScale, newInventory.GridScale) - currPickedItem.RectTransform.sizeDelta) / 2f;
 
-                    Inventory.TransferItemFromTo(handsInventory.Inventory, currPickedItem.InventoryCell, 1, newInventory.Inventory, GetCellFormUIGrid(point, newInventory.GridScale), isTunred);
+                        Inventory.TransferItemFromTo(handsInventory.Inventory, currPickedItem.InventoryCell, 1, newInventory.Inventory, GetCellFormUIGrid(point, newInventory.GridScale), isTunred, Inventory.TransferMode.ONLY_EMPTY);
+                    }
                 }
                 else //drop all item
                 {
@@ -283,7 +294,24 @@ public class UI_Menager_Inventory : MonoBehaviour
         return null;
     }
 
+    UI_Item MouseOnItem(UI_Item ignoreItem) 
+    {
 
+        PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
+        pointerEventData.position = Input.mousePosition;
+
+        List<RaycastResult> raycastResults = new List<RaycastResult>();
+
+        EventSystem.current.RaycastAll(pointerEventData, raycastResults);
+        for (int i = 0; i < raycastResults.Count; ++i)
+        {
+            if (raycastResults[i].gameObject.TryGetComponent(out UI_Item uI_item) && uI_item != ignoreItem)
+                return uI_item;
+
+        }
+
+        return null;
+    }
 
     #endregion
 

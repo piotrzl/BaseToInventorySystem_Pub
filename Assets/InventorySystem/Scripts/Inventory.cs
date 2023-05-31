@@ -19,6 +19,8 @@ public class Inventory : MonoBehaviour
     public enum InventoyUpdateMode { DESTROY }
     public enum ItemUpdateMode { ADD, REMOVE, CHAGE_COUNT }
 
+    public enum TransferMode {NON,ONLY_EMPTY, ONLY_EXIST}
+
     [SerializeField] InventoryStats _inventoryStats;
     bool isInit = false;
     ItemInventory[,] inventoryGrid;
@@ -86,7 +88,7 @@ public class Inventory : MonoBehaviour
         return true;
     }
 
-    public static bool TransferItemFromTo(Inventory inventoryFrom, Vector2Int itemFormCell, int count, Inventory inventoryTo, Vector2Int itemToCell, bool isTurned) // transfer item form inventory to other inventory
+    public static bool TransferItemFromTo(Inventory inventoryFrom, Vector2Int itemFormCell, int count, Inventory inventoryTo, Vector2Int itemToCell, bool isTurned, TransferMode mode) // transfer item form inventory to other inventory
     {
         if (!(AllGood(inventoryFrom) && inventoryFrom.CellInGrid(itemFormCell) && inventoryFrom.InventoryGrid[itemFormCell.x, itemFormCell.y] != null))
             return false;
@@ -106,7 +108,7 @@ public class Inventory : MonoBehaviour
         ItemStats curItemStats = inventoryFrom.InventoryItems[fromItemIndex].ItemStats;
 
 
-        if (inventoryTo.IsEmpty(itemToCell, inventoryTo.CalculateEndCell(itemToCell, curItemStats.Size, isTurned))) // tranfer item to empty space
+        if (mode != TransferMode.ONLY_EXIST && inventoryTo.IsEmpty(itemToCell, inventoryTo.CalculateEndCell(itemToCell, curItemStats.Size, isTurned))) // tranfer item to empty space
         {
             int howMuchCanTransfer = Mathf.Clamp(inventoryFrom.InventoryItems[fromItemIndex].Count, 0, Mathf.Min(count, curItemStats.MaxInventoryCount));
 
@@ -119,7 +121,7 @@ public class Inventory : MonoBehaviour
             inventoryTo.AddItemToInventory(curItemStats, itemToCell, isTurned, howMuchCanTransfer);
             return true;
         }
-        else // transfer item to exist stack
+        else if(mode != TransferMode.ONLY_EMPTY) // transfer item to exist stack
         {
             ItemInventory toItem = inventoryTo.FindItemInInventoryGrid(curItemStats.ItemID, itemToCell, itemToCell);
             
