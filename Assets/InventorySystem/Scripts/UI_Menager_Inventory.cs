@@ -31,10 +31,6 @@ public class UI_Menager_Inventory : MonoBehaviour
     }
 
 
-
-
-
-
     #region Open / Hide / Close Inventory
     public void AddHandsInvntory(Inventory inventory, Vector2 position) 
     {
@@ -98,6 +94,10 @@ public class UI_Menager_Inventory : MonoBehaviour
             newUIInventory.BuildUIInventory(inventory);
         else
             newUIInventory.UpdateUIInventory(false);
+
+        // to make sure item be always above inventory
+        if (currPickedItem)
+        currPickedItem.transform.SetAsLastSibling();
 
     }
     public void HideInventoryUI()
@@ -342,9 +342,5 @@ public class UI_Menager_Inventory : MonoBehaviour
     }
 
     #endregion
-
-
-
-
 
 }

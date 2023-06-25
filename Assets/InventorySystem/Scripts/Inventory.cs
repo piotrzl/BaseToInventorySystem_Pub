@@ -31,9 +31,6 @@ public class Inventory : MonoBehaviour
 
     List<ItemInventory> _inventoryItems = new List<ItemInventory>();
 
-
-  
-
     #region Static Methos
 
     public static bool TransferItemFromTo(ItemWorld itemObject, Inventory inventory, int count) // transfer from object to inventory
@@ -41,15 +38,17 @@ public class Inventory : MonoBehaviour
         if (!AllGood(inventory) || !itemObject.AllGood())
             return false;
 
-        int curCount = inventory.AddItem(itemObject.ItemStats, itemObject.Count);
-        itemObject.SetItemCount(curCount);
+        int addCount = Mathf.Clamp(count, 0, itemObject.Count);
 
-        if (curCount <= 0)
+        int howMuchLeft = inventory.AddItem(itemObject.ItemStats, addCount);
+
+        if (howMuchLeft <= 0)
             Destroy(itemObject.gameObject);
 
+        itemObject.SetItemCount(howMuchLeft);
 
-        return curCount == count;
-    } 
+        return true;
+    }
 
     public static bool TransferItemFromTo(Inventory inventory, Vector2Int itemFormCell, int count, Vector3 positionInWorld, Quaternion rotationInWorld) // transfer item from invntory to object
     {

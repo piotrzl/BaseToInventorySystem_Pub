@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterContoler : MonoBehaviour
@@ -42,19 +43,11 @@ public class CharacterContoler : MonoBehaviour
 
             UI_Menager_Inventory.Instance.AddHandsInvntory(handsInventory, new Vector2(4000, 4000));
         }
-
-
-
-        
     }
 
     
     void Update()
     {
-        
-
-
-
         if (!inventoryIsOpen)
         {
             xRotation = Input.GetAxis("Mouse X") * mouseSens;
@@ -75,9 +68,6 @@ public class CharacterContoler : MonoBehaviour
                 HideInventory();
             else
                 OpenInventory();
-
-     
-
     }
 
     void FixedUpdate()
@@ -118,7 +108,12 @@ public class CharacterContoler : MonoBehaviour
     {
         UI_Menager_Inventory.Instance.CloseInvntory(inventory);
         if (otherInvnetoryCoroutine != null)
+        {
             StopCoroutine(otherInvnetoryCoroutine);
+            otherInvnetoryCoroutine = null;
+        }
+
+        
     }
 
     IEnumerator OpenOtherInventory() 
@@ -133,6 +128,8 @@ public class CharacterContoler : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
         }
+
+
 
         if (otherInventory) 
         {
@@ -153,37 +150,68 @@ public class CharacterContoler : MonoBehaviour
                 for (int i = 0; i < inventoryList.Count; ++i)
                 {
                     if (itemWorld.AllGood())
-                        Inventory.TransferItemFromTo(itemWorld, inventoryList[i], itemWorld.ItemStats.MaxInventoryCount);
+                        Inventory.TransferItemFromTo(itemWorld, inventoryList[i], itemWorld.Count);
                 }
             }
             else if(hit.transform.TryGetComponent(out Inventory inventory))
             {
 
-                if (otherInvnetoryCoroutine != null)
+                if (otherInvnetoryCoroutine != null)// hide current inventory 
                 {
-                    StopCoroutine(otherInvnetoryCoroutine);
-                    otherInvnetoryCoroutine = null;
-
+                    if(otherInventory == inventory) // hide current inventory if you try again open same inventory
                     HideInventory();
+                    else // hide current inventory and open new one 
+                    {
+                        //   HideInventory();
+                        if(otherInventory)
+                        CloseInventory(otherInventory);
+
+                        otherInventory = inventory;
+                        otherInvnetoryCoroutine = StartCoroutine(OpenOtherInventory());
+                    }
                 }
-                else 
+                else // open new inventory
                 {
                     otherInventory = inventory;
                     otherInvnetoryCoroutine = StartCoroutine(OpenOtherInventory());
                 }
             }
+            
+        }
+        else // hide current invntory if raycast hit nothing
+        {
+            if (otherInventory)
+                CloseInventory(otherInventory);
         }
     }
 
     #region Character Contorl
     void Move() 
     {
+        
         Vector3 finalMove  = transform.right * moveDirection.x;
         finalMove += transform.forward * moveDirection.z;
         finalMove = speed * finalMove.normalized;
 
         _rigidbody.velocity = new Vector3(finalMove.x, _rigidbody.velocity.y, finalMove.z);
         
+
+        /*
+        float velMagnitude = _rigidbody.velocity.magnitude;
+        if (velMagnitude < speed)
+        {
+            float currentSpeed = speed - velMagnitude;
+            currentSpeed = Mathf.Clamp(currentSpeed, 0, speed);
+
+            Vector3 finalMove = transform.right * moveDirection.x;
+            finalMove += transform.forward * moveDirection.z;
+            finalMove = currentSpeed * finalMove.normalized;
+
+
+            _rigidbody.AddForce(finalMove, ForceMode.Impulse);
+        }
+        */
+
     }
 
     void Rotate() 
