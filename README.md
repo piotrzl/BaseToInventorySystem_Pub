@@ -13,7 +13,7 @@ II Control:
   2. F - interact
   3. I - open inventory
   4. LMB - pick item in invntory
-  When item is pick:
-  5. R - rotate item
-  6. LMB - drop full stack to inventory or world
-  7. RMB - drop one item to inventory or world
+     When item is pick:
+  6. R - rotate item
+  7. LMB - drop full stack to inventory or world
+  8. RMB - drop one item to inventory or world
